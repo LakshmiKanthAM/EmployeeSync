@@ -1,0 +1,63 @@
+<!doctype html>
+<html ng-app="myapp">
+    <head>
+        <meta charset="utf-8">
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Employees</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>    
+	</head>
+    <body style="margin:30px" ng-controller="employeeCtrl">
+    <div>
+        <label>Employee Name</label>
+        <input type="text" id="employeeName" ng-model="employeeName">
+        <br />
+        <label>Employee Age</label>
+        <input type="text" id="employeeAge" ng-model="employeeAge" >
+        <br />
+    </div>
+
+    <div>
+		<button class="btn btn-default" ng-click="saveEmployee()">Save<span class="glyphicon glyphicon-ok"></span></button>
+    </div>
+
+		<table class="table table-bordered">
+			<thead>
+				<th>Employee Name</th>
+				<th>Age</th>
+			</thead>
+		<tbody>
+			<tr ng-repeat="employee in employees">
+				<td>{{employee.employeeName}}</td>
+				<td>{{employee.employeeAge}}</td>
+			</tr>
+		</tbody>	
+		</table>
+
+    <div>
+
+    </div>
+	<script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
+	<script>
+		var myapp=angular.module("myapp",[]);
+		myapp.controller("employeeCtrl",function($scope){
+			$scope.employeeName="";
+			$scope.employeeAge=0;
+			$scope.employees={};
+			$scope.myData=new Firebase("https://sweltering-heat-463.firebaseio.com/");
+			$scope.saveEmployee=function(){
+			$scope.myData.push({employeeName:$scope.employeeName,
+								employeeAge:$scope.employeeAge});
+			$scope.employeeName="";
+			$scope.employeeAge=0;
+			}
+			$scope.myData.on('value',function(snapshot){
+				$scope.employees=snapshot.val();
+				$scope.$apply();
+			})
+		})
+	</script>
+
+    </body>
+</html>
